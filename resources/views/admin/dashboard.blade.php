@@ -251,6 +251,96 @@
         </table>
     </div>
 </div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Log Aktivitas Terakhir -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <div>
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Log Aktivitas
+                </h3>
+            </div>
+            <a href="{{ route('admin.activity-logs.index') }}" class="text-xs font-semibold text-primary-600 hover:text-primary-700">Lihat Semua</a>
+        </div>
+        <div class="p-0">
+            <ul class="divide-y divide-gray-100">
+                @forelse($recentActivities as $activity)
+                <li class="px-6 py-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0 mt-1">
+                            <div class="w-8 h-8 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center font-bold text-xs">
+                                {{ substr($activity->causer->name ?? 'A', 0, 1) }}
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-gray-900">
+                                {{ $activity->causer->name ?? 'Sistem' }}
+                            </p>
+                            <p class="text-sm text-gray-500 truncate">
+                                {{ $activity->description }}
+                            </p>
+                        </div>
+                        <div class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">
+                            {{ $activity->created_at->diffForHumans() }}
+                        </div>
+                    </div>
+                </li>
+                @empty
+                <li class="px-6 py-8 text-center text-sm text-gray-500">
+                    Belum ada log aktivitas.
+                </li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+
+    <!-- Top 5 Produk Paling Sering Dilihat -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <div>
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                    Paling Sering Dilihat
+                </h3>
+            </div>
+            <a href="{{ route('admin.products.index') }}" class="text-xs font-semibold text-primary-600 hover:text-primary-700">Katalog</a>
+        </div>
+        <div class="p-0">
+            <ul class="divide-y divide-gray-100">
+                @forelse($topProducts as $product)
+                <li class="px-6 py-3.5 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-shrink-0 h-10 w-10">
+                            @if($product->hasMedia('products'))
+                                <img class="h-10 w-10 rounded-lg object-cover border border-gray-200" src="{{ $product->getFirstMediaUrl('products') }}" alt="">
+                            @else
+                                <div class="h-10 w-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                </div>
+                            @endif
+                        </div>
+                        <div>
+                            <a href="{{ route('admin.products.edit', $product) }}" class="text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-1">
+                                {{ $product->name }}
+                            </a>
+                            <p class="text-xs text-gray-500 mt-0.5">{{ $product->category->name ?? 'Tanpa Kategori' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-lg">
+                        <span class="font-bold text-gray-800 mr-1">{{ number_format($product->views) }}</span> <span class="text-xs">views</span>
+                    </div>
+                </li>
+                @empty
+                <li class="px-6 py-8 text-center text-sm text-gray-500">
+                    Belum ada data produk.
+                </li>
+                @endforelse
+            </ul>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')

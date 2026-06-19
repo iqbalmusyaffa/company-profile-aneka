@@ -49,6 +49,9 @@ class DashboardController extends Controller
             'page_views' => $chartPageViews,
         ];
 
-        return view('admin.dashboard', compact('stats', 'chartData'));
+        $recentActivities = \Spatie\Activitylog\Models\Activity::with('causer')->latest()->take(5)->get();
+        $topProducts = \App\Models\Product::orderBy('views', 'desc')->take(5)->get();
+
+        return view('admin.dashboard', compact('stats', 'chartData', 'recentActivities', 'topProducts'));
     }
 }

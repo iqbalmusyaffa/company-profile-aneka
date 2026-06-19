@@ -45,6 +45,8 @@
                     <li><a href="{{ route('gallery') }}" class="text-primary-300 hover:text-accent transition-colors text-sm">Galeri Proyek</a></li>
                     <li><a href="{{ route('catalogs.download') }}" class="text-primary-300 hover:text-accent transition-colors text-sm">Download</a></li>
                     <li><a href="{{ route('faq') }}" class="text-primary-300 hover:text-accent transition-colors text-sm">Tanya Jawab (FAQ)</a></li>
+                    <li><a href="{{ route('feedback.index') }}" class="text-primary-300 hover:text-accent transition-colors text-sm">Kritik & Saran</a></li>
+                    <li><a href="{{ route('bug.index') }}" class="text-primary-300 hover:text-accent transition-colors text-sm">Laporan Bug / Error</a></li>
                 </ul>
             </div>
 

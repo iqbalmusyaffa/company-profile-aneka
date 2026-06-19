@@ -41,6 +41,11 @@ class HomeController extends Controller
 
         $faqs = \App\Models\Faq::where('is_active', true)->take(5)->get();
 
-        return view('frontend.home', compact('featuredProducts', 'categories', 'brands', 'latestPosts', 'promotions', 'testimonials', 'faqs'));
+        $trendingProducts = \App\Models\Product::with('media', 'category')
+            ->orderBy('views', 'desc')
+            ->take(4)
+            ->get();
+
+        return view('frontend.home', compact('featuredProducts', 'categories', 'brands', 'latestPosts', 'promotions', 'testimonials', 'faqs', 'trendingProducts'));
     }
 }

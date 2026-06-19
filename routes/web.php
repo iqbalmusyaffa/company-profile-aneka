@@ -51,6 +51,10 @@ Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('priv
 
 Route::get('/kontak', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/kontak', [ContactController::class, 'send'])->name('contact.send');
+Route::get('/kritik-saran', [ContactController::class, 'feedback'])->name('feedback.index');
+Route::post('/kritik-saran', [ContactController::class, 'storeFeedback'])->name('feedback.store');
+Route::get('/laporan-bug', [ContactController::class, 'bugReport'])->name('bug.index');
+Route::post('/laporan-bug', [ContactController::class, 'storeBugReport'])->name('bug.store');
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
@@ -102,6 +106,11 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Activity Logs
     Route::get('activity-logs', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+    // Feedbacks & Bug Reports
+    Route::resource('feedbacks', \App\Http\Controllers\Admin\FeedbackController::class)->only(['index', 'destroy']);
+    Route::resource('bug-reports', \App\Http\Controllers\Admin\BugReportController::class)->only(['index', 'destroy']);
+    Route::patch('bug-reports/{bug_report}/resolve', [\App\Http\Controllers\Admin\BugReportController::class, 'resolve'])->name('bug-reports.resolve');
 
     // Admin Users
     Route::resource('users', \App\Http\Controllers\Admin\AdminUserController::class)->except(['show']);
