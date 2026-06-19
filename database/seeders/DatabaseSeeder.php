@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // Membuat Akun Admin Utama
         User::updateOrCreate(
-            ['email' => 'admin@anekajaya.com'], // Pastikan email unik
+            ['email' => 'admin@anekajaya.my.id'], // Pastikan email unik
             [
                 'name' => 'Super Admin',
-                'password' => bcrypt('password'), // Anda bisa mengganti ini nanti
+                'password' => bcrypt('Yusa121212'), // Anda bisa mengganti ini nanti
                 'email_verified_at' => now(),
             ]
         );
