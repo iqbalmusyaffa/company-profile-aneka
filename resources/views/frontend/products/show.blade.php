@@ -30,22 +30,48 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
-            <!-- Product Images -->
-            <div class="flex flex-col gap-4">
+            <!-- Product Images Gallery -->
+            <div class="flex flex-col gap-4" 
+                 x-data="{ 
+                    images: [
+                        @if($product->hasMedia('products'))
+                            @foreach($product->getMedia('products') as $media)
+                                '{{ $media->getUrl() }}',
+                            @endforeach
+                        @endif
+                        @if($product->image_urls)
+                            @foreach($product->image_urls as $url)
+                                '{{ $url }}',
+                            @endforeach
+                        @endif
+                    ],
+                    activeImage: 0 
+                 }">
                 <!-- Main Image -->
                 <div class="w-full aspect-square md:aspect-w-4 md:aspect-h-3 lg:aspect-square bg-gray-100 rounded-2xl overflow-hidden shadow-sm relative">
-                    @if($product->hasMedia('products'))
-                        <img src="{{ $product->getFirstMediaUrl('products') }}" alt="{{ $product->name }}" class="w-full h-full object-cover object-center">
-                    @else
+                    <template x-if="images.length > 0">
+                        <img :src="images[activeImage]" alt="{{ $product->name }}" class="w-full h-full object-cover object-center transition-opacity duration-300">
+                    </template>
+                    <template x-if="images.length === 0">
                         <div class="w-full h-full flex items-center justify-center text-gray-400">
                             <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
-                    @endif
+                    </template>
                     @if($product->is_featured)
-                        <div class="absolute top-4 left-4 bg-accent text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">
+                        <div class="absolute top-4 left-4 bg-accent text-white text-sm font-bold px-3 py-1 rounded-full shadow-md z-10">
                             Unggulan
                         </div>
                     @endif
+                </div>
+                
+                <!-- Thumbnails -->
+                <div class="grid grid-cols-4 gap-2 sm:gap-4 mt-2" x-show="images.length > 1">
+                    <template x-for="(image, index) in images" :key="index">
+                        <button @click="activeImage = index" class="w-full aspect-square rounded-xl overflow-hidden border-2 transition-all"
+                                :class="activeImage === index ? 'border-primary-500 ring-2 ring-primary-500/50' : 'border-transparent hover:border-primary-300'">
+                            <img :src="image" alt="Thumbnail" class="w-full h-full object-cover">
+                        </button>
+                    </template>
                 </div>
             </div>
 
@@ -53,15 +79,21 @@
             <div class="mt-10 px-4 sm:px-0 lg:mt-0">
                 <div class="flex items-center justify-between mb-4">
                     <p class="text-sm font-semibold text-primary-600 uppercase tracking-wider">{{ $product->brand->name ?? 'Aneka Jaya' }}</p>
-                    @if($product->stock > 0)
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                            Stok Tersedia ({{ $product->stock }})
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center text-xs font-medium text-gray-600 bg-gray-100 px-2.5 py-0.5 rounded-full border border-gray-200">
+                            <svg class="w-3.5 h-3.5 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            Dilihat {{ $product->views }} kali
                         </span>
-                    @else
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                            Stok Habis
-                        </span>
-                    @endif
+                        @if($product->stock > 0)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                Stok Tersedia ({{ $product->stock }})
+                            </span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                                Stok Habis
+                            </span>
+                        @endif
+                    </div>
                 </div>
                 
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">{{ $product->name }}</h1>

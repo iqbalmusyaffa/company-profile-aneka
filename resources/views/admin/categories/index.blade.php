@@ -57,6 +57,19 @@
                     </td>
                     <td class="px-8 py-5">
                         <div class="text-sm text-gray-600 line-clamp-2 max-w-xs">{{ $category->description ?? '-' }}</div>
+                        <div class="mt-2">
+                            @if($category->type === 'product')
+                                <span class="px-2 py-0.5 inline-flex text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-200">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                    Produk
+                                </span>
+                            @elseif($category->type === 'post')
+                                <span class="px-2 py-0.5 inline-flex text-xs font-semibold rounded-full bg-purple-100 text-purple-800 border border-purple-200">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                                    Artikel Blog
+                                </span>
+                            @endif
+                        </div>
                     </td>
                     <td class="px-8 py-5 whitespace-nowrap">
                         @if($category->is_active)

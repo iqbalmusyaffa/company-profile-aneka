@@ -15,6 +15,10 @@ class Product extends Model implements HasMedia
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'image_urls' => 'array',
+    ];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

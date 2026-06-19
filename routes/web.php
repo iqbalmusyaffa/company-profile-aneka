@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\BackupController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SeoPageController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CatalogController as AdminCatalogController;
+use App\Http\Controllers\Admin\AnalyticsController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -56,13 +58,31 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 // Admin Routes
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
     Route::resource('categories', CategoryController::class);
+    
+    Route::get('brands/export-pdf', [BrandController::class, 'exportPdf'])->name('brands.export.pdf');
+    Route::get('brands/export-excel', [BrandController::class, 'exportExcel'])->name('brands.export.excel');
+    Route::get('brands/report', [BrandController::class, 'report'])->name('brands.report');
     Route::resource('brands', BrandController::class);
-    Route::get('products/export/excel', [ProductController::class, 'exportExcel'])->name('products.export.excel');
-    Route::get('products/import/template', [ProductController::class, 'downloadTemplate'])->name('products.import.template');
-    Route::post('products/import/excel', [ProductController::class, 'importExcel'])->name('products.import.excel');
+
+    // Reports
+    Route::get('products/report', [ProductController::class, 'report'])->name('products.report');
+    Route::get('products/export-pdf', [ProductController::class, 'exportPdf'])->name('products.export.pdf');
+    Route::get('products/export-excel', [ProductController::class, 'exportExcel'])->name('products.export.excel');
+
+    // Products Resource
+    Route::delete('products/{product}/media/{media}', [ProductController::class, 'deleteImage'])->name('products.media.destroy');
+    Route::post('products/import', [ProductController::class, 'importExcel'])->name('products.import');
+    Route::get('products/download-template', [ProductController::class, 'downloadTemplate'])->name('products.download-template');
     Route::resource('products', ProductController::class);
+
+    // Backups
+    Route::get('backups', [BackupController::class, 'index'])->name('backups.index');
+    Route::post('backups', [BackupController::class, 'store'])->name('backups.store');
+    Route::get('backups/{file}/download', [BackupController::class, 'download'])->name('backups.download');
+    Route::delete('backups/{file}', [BackupController::class, 'destroy'])->name('backups.destroy');
     Route::resource('posts', PostController::class);
     Route::resource('seo-pages', SeoPageController::class);
     Route::resource('galleries', GalleryController::class);

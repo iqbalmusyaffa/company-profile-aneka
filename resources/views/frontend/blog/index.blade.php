@@ -15,9 +15,15 @@
     <div class="flex flex-col lg:flex-row gap-10">
         <!-- Main Content -->
         <div class="lg:w-2/3">
-            @if(request('search'))
+            @if(request('search') || request('category'))
                 <div class="mb-8">
-                    <h2 class="text-xl font-bold text-gray-900">Hasil Pencarian: "{{ request('search') }}"</h2>
+                    <h2 class="text-xl font-bold text-gray-900">
+                        @if(request('search'))
+                            Hasil Pencarian: "{{ request('search') }}"
+                        @elseif(request('category'))
+                            Topik Artikel: "{{ ucwords(str_replace('-', ' ', request('category'))) }}"
+                        @endif
+                    </h2>
                 </div>
             @endif
 
@@ -104,7 +110,7 @@
                 <ul class="space-y-3">
                     @foreach($categories as $cat)
                     <li>
-                        <a href="{{ route('product.index', ['search' => $cat->name]) }}" class="flex items-center justify-between group">
+                        <a href="{{ route('blog.index', ['category' => $cat->slug]) }}" class="flex items-center justify-between group">
                             <span class="text-gray-600 group-hover:text-primary-600 transition-colors">{{ $cat->name }}</span>
                             <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </a>

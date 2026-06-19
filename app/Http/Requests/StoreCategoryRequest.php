@@ -16,6 +16,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'in:product,post'],
             'description' => ['nullable', 'string'],
             'is_active' => ['boolean'],
             'image' => ['nullable', 'image', 'max:2048']

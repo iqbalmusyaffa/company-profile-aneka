@@ -16,6 +16,7 @@ class HomeController extends Controller
             ->get();
 
         $categories = \App\Models\Category::with('media')
+            ->product()
             ->get();
 
         $brands = \App\Models\Brand::with('media')

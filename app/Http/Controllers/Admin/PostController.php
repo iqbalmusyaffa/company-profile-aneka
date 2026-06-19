@@ -28,7 +28,7 @@ class PostController extends Controller
 
     public function create()
     {
-        $categories = $this->categoryService->getAll();
+        $categories = \App\Models\Category::post()->get();
         return view('admin.posts.form', compact('categories'));
     }
 
@@ -46,7 +46,7 @@ class PostController extends Controller
         $data = $request->except(['image', '_token']);
         $data['status'] = $request->has('is_published') ? 'published' : 'draft';
         $data['slug'] = Str::slug($data['title']) . '-' . uniqid();
-        $data['author_id'] = Auth::id(); // Assign current logged in user as author
+        $data['user_id'] = Auth::id(); // Assign current logged in user as author
 
         $post = $this->postService->create($data);
 
@@ -60,7 +60,7 @@ class PostController extends Controller
     public function edit(string $id)
     {
         $post = $this->postService->findById($id);
-        $categories = $this->categoryService->getAll();
+        $categories = \App\Models\Category::post()->get();
         return view('admin.posts.form', compact('post', 'categories'));
     }
 

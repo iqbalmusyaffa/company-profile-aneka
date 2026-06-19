@@ -285,7 +285,8 @@
                         pointRadius: 4,
                         pointHoverRadius: 6,
                         fill: true,
-                        tension: 0.4
+                        tension: 0.4,
+                        cubicInterpolationMode: 'monotone'
                     },
                     {
                         label: 'Pengunjung Unik',
@@ -300,7 +301,8 @@
                         pointRadius: 3,
                         pointHoverRadius: 5,
                         fill: false,
-                        tension: 0.4
+                        tension: 0.4,
+                        cubicInterpolationMode: 'monotone'
                     }
                 ]
             },
@@ -319,12 +321,20 @@
                     tooltip: {
                         mode: 'index',
                         intersect: false,
-                        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#111827',
+                        bodyColor: '#4b5563',
+                        borderColor: 'rgba(0,0,0,0.05)',
+                        borderWidth: 1,
                         titleFont: { family: "'Inter', sans-serif", size: 13, weight: 'bold' },
-                        bodyFont: { family: "'Inter', sans-serif", size: 13 },
-                        padding: 12,
+                        bodyFont: { family: "'Inter', sans-serif", size: 13, weight: '500' },
+                        padding: 14,
                         cornerRadius: 12,
-                        boxPadding: 6
+                        boxPadding: 8,
+                        usePointStyle: true,
+                        boxWidth: 8,
+                        boxHeight: 8,
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
                     }
                 },
                 interaction: {

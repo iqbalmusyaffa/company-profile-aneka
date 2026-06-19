@@ -27,4 +27,9 @@ class Brand extends Model implements HasMedia
     {
         return $this->hasMany(Product::class);
     }
+
+    public function topProduct()
+    {
+        return $this->hasOne(Product::class)->ofMany('views', 'max');
+    }
 }

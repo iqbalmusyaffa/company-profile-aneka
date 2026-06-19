@@ -28,4 +28,19 @@ class Category extends Model implements HasMedia
     {
         return $this->hasMany(Product::class);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function scopeProduct($query)
+    {
+        return $query->where('type', 'product');
+    }
+
+    public function scopePost($query)
+    {
+        return $query->where('type', 'post');
+    }
 }

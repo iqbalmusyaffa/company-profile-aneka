@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\BrandService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\BrandsExport;
 use Illuminate\Http\Request;
+use App\Models\Brand;
 
 class BrandController extends Controller
 {
@@ -13,6 +17,32 @@ class BrandController extends Controller
     public function __construct(BrandService $brandService)
     {
         $this->brandService = $brandService;
+    }
+
+    public function report()
+    {
+        $brands = Brand::withCount('products')
+            ->withSum('products', 'views')
+            ->with('topProduct')
+            ->orderByDesc('products_count')
+            ->get();
+
+        $activeCount = Brand::where('is_active', true)->count();
+        $inactiveCount = Brand::where('is_active', false)->count();
+
+        return view('admin.brands.report', compact('brands', 'activeCount', 'inactiveCount'));
+    }
+
+    public function exportPdf()
+    {
+        $brands = Brand::withCount('products')->withSum('products', 'views')->get();
+        $pdf = Pdf::loadView('admin.brands.report-pdf', compact('brands'))->setPaper('a4', 'landscape');
+        return $pdf->download('Laporan_Merek_' . date('Ymd_His') . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new BrandsExport, 'Laporan_Merek_' . date('Ymd_His') . '.xlsx');
     }
 
     public function index()

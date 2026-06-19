@@ -8,10 +8,12 @@
         <h1 class="text-2xl font-bold text-gray-900">Katalog PDF</h1>
         <p class="text-gray-600 text-sm mt-1">Kelola file katalog PDF untuk diunduh pengunjung.</p>
     </div>
-    <a href="{{ route('admin.catalogs.create') }}" class="btn-primary">
-        <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-        Tambah Katalog
-    </a>
+    <div class="flex flex-wrap gap-3">
+        <a href="{{ route('admin.catalogs.create') }}" class="bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-primary-500/30 transition-all flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Tambah Katalog
+        </a>
+    </div>
 </div>
 
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

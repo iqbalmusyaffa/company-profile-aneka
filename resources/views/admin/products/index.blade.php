@@ -13,10 +13,6 @@
             <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
             Import
         </button>
-        <a href="{{ route('admin.products.export.excel') }}" onclick="const url = new URL(this.href); url.searchParams.set('tz', Intl.DateTimeFormat().resolvedOptions().timeZone); this.href = url.toString();" target="_blank" class="bg-white hover:bg-gray-50 text-gray-700 font-semibold py-2.5 px-5 rounded-xl border border-gray-200 shadow-sm transition-all flex items-center">
-            <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Export
-        </a>
         <a href="{{ route('admin.products.create') }}" class="bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white font-semibold py-2.5 px-5 rounded-xl shadow-lg shadow-primary-500/30 transition-all flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             Tambah Produk
@@ -48,12 +44,12 @@
             <h3 class="text-xl font-bold text-gray-900 mb-2">Import Data Produk</h3>
             <p class="text-sm text-gray-500 mb-6">Unggah file Excel Anda. Pastikan format kolom sesuai dengan template standar kami.</p>
             
-            <a href="{{ route('admin.products.import.template') }}" class="text-sm text-primary-600 hover:text-primary-800 font-semibold flex items-center mb-6 bg-primary-50 p-3 rounded-xl transition-colors">
+            <a href="{{ route('admin.products.download-template') }}" class="text-sm text-primary-600 hover:text-primary-800 font-semibold flex items-center mb-6 bg-primary-50 p-3 rounded-xl transition-colors">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 Download Template Excel
             </a>
 
-            <form action="{{ route('admin.products.import.excel') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.products.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-6">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih File (.xlsx)</label>
@@ -186,4 +182,3 @@
     </div>
 </div>
 @endsection
-

@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Process;
+
+class BackupController extends Controller
+{
+    public function index()
+    {
+        $backupDir = storage_path('app/backups');
+        $files = file_exists($backupDir) ? glob($backupDir . '/*.sql') : [];
+        
+        $backups = [];
+        if ($files) {
+            foreach ($files as $file) {
+                $backups[] = [
+                    'name' => basename($file),
+                    'size' => $this->formatSizeUnits(filesize($file)),
+                    'date' => filemtime($file),
+                    'path' => $file
+                ];
+            }
+        }
+
+        // Urutkan dari yang terbaru
+        usort($backups, function($a, $b) {
+            return $b['date'] <=> $a['date'];
+        });
+
+        return view('admin.backups.index', compact('backups'));
+    }
+
+    public function store()
+    {
+        try {
+            $backupDir = storage_path('app/backups');
+            if (!file_exists($backupDir)) {
+                mkdir($backupDir, 0755, true);
+            }
+
+            $filename = 'backup-' . date('Y-m-d-His') . '.sql';
+            $path = $backupDir . DIRECTORY_SEPARATOR . $filename;
+            
+            $dbName = config('database.connections.mysql.database');
+            $dbUser = config('database.connections.mysql.username');
+            $dbPass = config('database.connections.mysql.password');
+            $dbHost = config('database.connections.mysql.host');
+            $dbPort = config('database.connections.mysql.port');
+
+            // Format DSN PDO untuk library mysqldump-php
+            $dsn = "mysql:host={$dbHost};port={$dbPort};dbname={$dbName}";
+
+            // Gunakan library PHP murni untuk dump database tanpa butuh mysqldump.exe di server
+            $dump = new \Ifsnop\Mysqldump\Mysqldump($dsn, $dbUser, $dbPass);
+            $dump->start($path);
+
+            return redirect()->route('admin.backups.index')->with('success', 'Backup database berhasil dibuat.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.backups.index')->with('error', 'Gagal membuat backup. Detail: ' . $e->getMessage());
+        }
+    }
+
+    public function download($file)
+    {
+        $path = storage_path('app/backups/' . $file);
+        if (file_exists($path)) {
+            return response()->download($path);
+        }
+        return redirect()->route('admin.backups.index')->with('error', 'File backup tidak ditemukan.');
+    }
+
+    public function destroy($file)
+    {
+        $path = storage_path('app/backups/' . $file);
+        if (file_exists($path)) {
+            unlink($path);
+            return redirect()->route('admin.backups.index')->with('success', 'File backup berhasil dihapus.');
+        }
+        return redirect()->route('admin.backups.index')->with('error', 'File backup tidak ditemukan.');
+    }
+
+    private function formatSizeUnits($bytes)
+    {
+        if ($bytes >= 1073741824) {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        } elseif ($bytes >= 1048576) {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        } elseif ($bytes >= 1024) {
+            $bytes = number_format($bytes / 1024, 2) . ' KB';
+        } elseif ($bytes > 1) {
+            $bytes = $bytes . ' bytes';
+        } elseif ($bytes == 1) {
+            $bytes = $bytes . ' byte';
+        } else {
+            $bytes = '0 bytes';
+        }
+
+        return $bytes;
+    }
+}

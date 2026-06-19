@@ -18,7 +18,7 @@
     </a>
 </div>
 
-<form action="{{ isset($product) ? route('admin.products.update', $product->id) : route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+<form id="product-form" action="{{ isset($product) ? route('admin.products.update', $product->id) : route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @if(isset($product))
         @method('PUT')
@@ -137,29 +137,59 @@
             </div>
 
             <!-- Media -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6" x-data="{ urls: {{ isset($product) && $product->image_urls ? json_encode($product->image_urls) : '[]' }} }">
                 <h3 class="text-lg font-bold text-gray-900 mb-4 border-b border-gray-100 pb-2">Gambar Produk</h3>
                 
                 @if(isset($product) && $product->hasMedia('products'))
-                    <div class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-2xl flex justify-center items-center relative group overflow-hidden">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-10">
-                            <span class="text-white text-xs font-bold px-3 py-1 bg-black/50 rounded-full">Gambar Saat Ini</span>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Gambar dari Server</label>
+                        <div class="grid grid-cols-2 gap-4">
+                            @foreach($product->getMedia('products') as $media)
+                            <div class="relative group rounded-xl overflow-hidden border border-gray-200">
+                                <img src="{{ $media->getUrl() }}" alt="Product Image" class="w-full h-32 object-cover">
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm z-10">
+                                    <button type="button" onclick="if(confirm('Hapus gambar ini?')) { document.getElementById('delete-media-{{ $media->id }}').submit(); }" class="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-full text-xs font-bold">
+                                        Hapus
+                                    </button>
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
-                        <img src="{{ $product->getFirstMediaUrl('products') }}" alt="Current Image" class="w-full rounded-xl border border-gray-200 relative z-0">
                     </div>
                 @endif
-                <div class="relative border-2 border-dashed border-gray-300 rounded-2xl hover:border-primary-500 hover:bg-primary-50 transition-all group bg-white">
+
+                <div class="mb-6 relative border-2 border-dashed border-gray-300 rounded-2xl hover:border-primary-500 hover:bg-primary-50 transition-all group bg-white">
                     <div class="px-6 py-8 flex flex-col items-center justify-center text-center">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 group-hover:bg-primary-100 group-hover:text-primary-600 rounded-full flex items-center justify-center mb-3 transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                         </div>
-                        <p class="text-sm font-bold text-gray-700 group-hover:text-primary-700 mb-1">Pilih File Gambar</p>
-                        <p class="text-xs text-gray-500">atau seret dan lepas ke area ini</p>
-                        <p class="text-xs text-gray-400 mt-3 font-medium bg-gray-100 px-3 py-1 rounded-full group-hover:bg-primary-100 group-hover:text-primary-600">JPG, PNG (Maks. 5MB)</p>
+                        <p class="text-sm font-bold text-gray-700 group-hover:text-primary-700 mb-1">Pilih File Gambar Baru</p>
+                        <p class="text-xs text-gray-500">Anda dapat memilih lebih dari satu file</p>
+                        <p class="text-xs text-gray-400 mt-3 font-medium bg-gray-100 px-3 py-1 rounded-full group-hover:bg-primary-100 group-hover:text-primary-600">JPG, PNG (Maks. 5MB per file)</p>
                     </div>
-                    <input type="file" name="image" id="image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="if(this.files[0] && this.files[0].size > 5242880) { alert('Ukuran file maksimal adalah 5MB!'); this.value = ''; this.parentElement.querySelector('p.font-bold').innerText = 'Pilih File Gambar'; } else { this.parentElement.querySelector('p.font-bold').innerText = this.files[0] ? this.files[0].name : 'Pilih File Gambar'; }">
+                    <input type="file" name="images[]" id="images" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="this.parentElement.querySelector('p.font-bold').innerText = this.files.length + ' file dipilih';">
                 </div>
-                @error('image') <p class="text-red-500 text-xs mt-2">{{ $message }}</p> @enderror
+                @error('images.*') <p class="text-red-500 text-xs mt-2">{{ $message }}</p> @enderror
+
+                <!-- Eksternal Links / Google Drive Links -->
+                <div class="mt-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Link Gambar Eksternal (Google Drive / URL)</label>
+                    <p class="text-xs text-gray-500 mb-3">Copy link gambar dari Google Drive (Viewer link) atau URL gambar langsung.</p>
+                    
+                    <template x-for="(url, index) in urls" :key="index">
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="text" x-model="urls[index]" name="image_urls[]" placeholder="https://drive.google.com/file/d/..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                            <button type="button" @click="urls.splice(index, 1)" class="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </template>
+                    
+                    <button type="button" @click="urls.push('')" class="mt-2 text-sm font-semibold text-primary-600 flex items-center hover:text-primary-700">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Tambah Link Eksternal
+                    </button>
+                </div>
             </div>
 
             <!-- Publish -->
@@ -190,6 +220,15 @@
     </div>
 </form>
 
+@if(isset($product) && $product->hasMedia('products'))
+    @foreach($product->getMedia('products') as $media)
+        <form id="delete-media-{{ $media->id }}" action="{{ route('admin.products.images.destroy', [$product->id, $media->id]) }}" method="POST" class="hidden">
+            @csrf
+            @method('DELETE')
+        </form>
+    @endforeach
+@endif
+
 @endsection
 
 @push('scripts')
@@ -217,10 +256,14 @@
         }
 
         // On form submit, populate the hidden input with HTML content
-        var form = document.querySelector('form');
-        form.onsubmit = function() {
-            descInput.value = quill.root.innerHTML;
-        };
+        var form = document.getElementById('product-form');
+        if(form) {
+            form.onsubmit = function() {
+                var html = quill.root.innerHTML;
+                if (html === '<p><br></p>') html = '';
+                descInput.value = html;
+            };
+        }
     });
 </script>
 @endpush

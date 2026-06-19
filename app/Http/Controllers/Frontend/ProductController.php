@@ -17,7 +17,7 @@ class ProductController extends Controller
         }
 
         $products = $query->latest()->paginate(12);
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::product()->get();
         $brands = \App\Models\Brand::all();
         
         return view('frontend.products.index', compact('products', 'categories', 'brands'));
@@ -28,6 +28,8 @@ class ProductController extends Controller
         $product = \App\Models\Product::with('media', 'category', 'brand')
             ->where('slug', $slug)
             ->firstOrFail();
+
+        $product->increment('views');
 
         $relatedProducts = \App\Models\Product::with('media')
             ->where('category_id', $product->category_id)
@@ -47,7 +49,7 @@ class ProductController extends Controller
             ->latest()
             ->paginate(12);
             
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::product()->get();
         $brands = \App\Models\Brand::all();
 
         return view('frontend.products.index', compact('products', 'categories', 'category', 'brands'));
@@ -62,7 +64,7 @@ class ProductController extends Controller
             ->latest()
             ->paginate(12);
             
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::product()->get();
         $brands = \App\Models\Brand::all();
 
         return view('frontend.products.index', compact('products', 'categories', 'brand', 'brands'));

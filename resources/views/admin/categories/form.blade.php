@@ -29,6 +29,16 @@
             @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
         </div>
 
+        <!-- Tipe Kategori -->
+        <div>
+            <label for="type" class="block text-sm font-semibold text-gray-700 mb-1">Jenis Kategori <span class="text-red-500">*</span></label>
+            <select name="type" id="type" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                <option value="product" {{ old('type', $category->type ?? 'product') == 'product' ? 'selected' : '' }}>Produk (Katalog)</option>
+                <option value="post" {{ old('type', $category->type ?? '') == 'post' ? 'selected' : '' }}>Artikel (Blog)</option>
+            </select>
+            @error('type') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+
         <!-- Deskripsi -->
         <div>
             <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Singkat</label>

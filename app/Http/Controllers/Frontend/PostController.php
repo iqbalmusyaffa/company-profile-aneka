@@ -16,8 +16,15 @@ class PostController extends Controller
             $query->where('title', 'like', '%' . $search . '%');
         }
 
+        if ($request->has('category')) {
+            $categorySlug = $request->get('category');
+            $query->whereHas('category', function($q) use ($categorySlug) {
+                $q->where('slug', $categorySlug);
+            });
+        }
+
         $posts = $query->latest()->paginate(9);
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::post()->get();
 
         return view('frontend.blog.index', compact('posts', 'categories'));
     }
@@ -29,6 +36,8 @@ class PostController extends Controller
             ->where('status', 'published')
             ->firstOrFail();
 
+        $post->increment('views');
+
         $relatedPosts = \App\Models\Post::with('media', 'category')
             ->where('category_id', $post->category_id)
             ->where('id', '!=', $post->id)
@@ -37,7 +46,7 @@ class PostController extends Controller
             ->take(3)
             ->get();
             
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::post()->get();
 
         return view('frontend.blog.show', compact('post', 'relatedPosts', 'categories'));
     }

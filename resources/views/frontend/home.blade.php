@@ -233,11 +233,11 @@
             <p class="text-primary-200 text-lg max-w-2xl mx-auto">Kepercayaan Anda adalah prioritas kami. Simak pengalaman mereka yang telah membangun impian bersama Aneka Jaya.</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @foreach($testimonials->take(3) as $testimonial)
-            <div class="bg-white rounded-2xl p-8 shadow-xl relative mt-8">
+        <div class="flex overflow-x-auto pb-10 -mx-4 px-4 sm:mx-0 sm:px-0 gap-6 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
+            @foreach($testimonials as $testimonial)
+            <div class="bg-white rounded-2xl p-8 shadow-xl relative mt-8 flex-none w-[85vw] sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] snap-center transition-all duration-300 hover:-translate-y-2 border border-transparent hover:border-primary-100 group">
                 <!-- Quote Icon -->
-                <div class="absolute -top-6 left-8 bg-accent text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg">
+                <div class="absolute -top-6 left-8 bg-accent text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg group-hover:scale-110 transition-transform">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" /></svg>
                 </div>
                 
@@ -249,8 +249,8 @@
                 
                 <p class="text-gray-700 italic mb-6 leading-relaxed">"{{ $testimonial->comment }}"</p>
                 
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 font-bold text-lg">
+                <div class="flex items-center gap-4 mt-auto">
+                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-700 font-bold text-lg group-hover:bg-primary-600 group-hover:text-white transition-colors">
                         {{ substr($testimonial->customer_name, 0, 1) }}
                     </div>
                     <div>
@@ -272,14 +272,51 @@
         <div class="text-center mb-10">
             <h2 class="text-2xl font-bold text-gray-400 uppercase tracking-widest text-sm">Mitra Brand Pilihan</h2>
         </div>
-        <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            @foreach($brands as $brand)
-                @if($brand->hasMedia('brands'))
-                    <img src="{{ $brand->getFirstMediaUrl('brands') }}" alt="{{ $brand->name }}" class="h-12 md:h-16 object-contain hover:scale-110 transition-transform">
-                @else
-                    <span class="text-xl font-extrabold text-gray-500">{{ $brand->name }}</span>
-                @endif
-            @endforeach
+        <div class="relative flex overflow-hidden group py-4">
+            <!-- First scrolling container -->
+            <div class="flex animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap items-center">
+                @foreach($brands as $brand)
+                    <div class="mx-8 md:mx-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 flex-shrink-0">
+                        @if($brand->hasMedia('brands'))
+                            <img src="{{ $brand->getFirstMediaUrl('brands') }}" alt="{{ $brand->name }}" class="h-12 md:h-16 w-auto object-contain hover:scale-110 transition-transform">
+                        @else
+                            <span class="text-xl font-extrabold text-gray-500">{{ $brand->name }}</span>
+                        @endif
+                    </div>
+                @endforeach
+                <!-- Duplicate 1 -->
+                @foreach($brands as $brand)
+                    <div class="mx-8 md:mx-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 flex-shrink-0" aria-hidden="true">
+                        @if($brand->hasMedia('brands'))
+                            <img src="{{ $brand->getFirstMediaUrl('brands') }}" alt="{{ $brand->name }}" class="h-12 md:h-16 w-auto object-contain hover:scale-110 transition-transform">
+                        @else
+                            <span class="text-xl font-extrabold text-gray-500">{{ $brand->name }}</span>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+            <!-- Second scrolling container (Absolute) for seamless loop -->
+            <div class="flex animate-marquee group-hover:[animation-play-state:paused] whitespace-nowrap items-center absolute top-0 py-4" aria-hidden="true">
+                @foreach($brands as $brand)
+                    <div class="mx-8 md:mx-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 flex-shrink-0">
+                        @if($brand->hasMedia('brands'))
+                            <img src="{{ $brand->getFirstMediaUrl('brands') }}" alt="{{ $brand->name }}" class="h-12 md:h-16 w-auto object-contain hover:scale-110 transition-transform">
+                        @else
+                            <span class="text-xl font-extrabold text-gray-500">{{ $brand->name }}</span>
+                        @endif
+                    </div>
+                @endforeach
+                <!-- Duplicate 2 -->
+                @foreach($brands as $brand)
+                    <div class="mx-8 md:mx-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500 flex-shrink-0" aria-hidden="true">
+                        @if($brand->hasMedia('brands'))
+                            <img src="{{ $brand->getFirstMediaUrl('brands') }}" alt="{{ $brand->name }}" class="h-12 md:h-16 w-auto object-contain hover:scale-110 transition-transform">
+                        @else
+                            <span class="text-xl font-extrabold text-gray-500">{{ $brand->name }}</span>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 </div>
@@ -339,34 +376,40 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($latestPosts as $post)
-            <article class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-shadow duration-300 overflow-hidden group">
-                <a href="{{ route('blog.show', $post->slug ?? $post->id) }}" class="block relative h-56 overflow-hidden">
+            <article class="bg-white rounded-2xl shadow-sm border border-transparent hover:border-primary-100 hover:shadow-2xl transition-all duration-500 overflow-hidden group transform hover:-translate-y-2">
+                <a href="{{ route('blog.show', $post->slug ?? $post->id) }}" class="block relative h-60 overflow-hidden">
                     @if($post->hasMedia('posts'))
-                        <img src="{{ $post->getFirstMediaUrl('posts') }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ $post->getFirstMediaUrl('posts') }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out">
                     @else
-                        <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">Tanpa Gambar</div>
+                        <div class="w-full h-full bg-primary-50 flex items-center justify-center text-primary-400 font-medium">Tanpa Gambar</div>
                     @endif
-                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary-700 shadow-sm">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <div class="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-accent shadow-lg uppercase tracking-wider transform -translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                         {{ $post->category->name ?? 'Berita' }}
                     </div>
-                </a>
-                <div class="p-6">
-                    <div class="text-sm text-gray-500 mb-2 flex items-center">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        {{ $post->created_at->format('d M Y') }}
+                    
+                    <div class="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 delay-100">
+                        <span class="text-sm font-semibold flex items-center">
+                            Baca Artikel <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </span>
                     </div>
-                    <a href="{{ route('blog.show', $post->slug ?? $post->id) }}" class="block">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
+                </a>
+                <div class="p-6 relative">
+                    <!-- Date Badge -->
+                    <div class="absolute -top-6 right-6 bg-primary-600 text-white w-14 h-14 rounded-2xl flex flex-col items-center justify-center shadow-lg transform rotate-3 group-hover:rotate-0 transition-transform duration-300">
+                        <span class="text-xl font-black leading-none">{{ $post->created_at->format('d') }}</span>
+                        <span class="text-xs uppercase font-semibold tracking-wider">{{ $post->created_at->format('M') }}</span>
+                    </div>
+                    
+                    <a href="{{ route('blog.show', $post->slug ?? $post->id) }}" class="block mt-4">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2 leading-snug">
                             {{ $post->title }}
                         </h3>
                     </a>
-                    <p class="text-gray-600 line-clamp-3 mb-4 text-sm leading-relaxed">
+                    <p class="text-gray-600 line-clamp-3 mb-0 text-sm leading-relaxed">
                         {{ $post->excerpt ?? Str::limit(strip_tags($post->content), 120) }}
                     </p>
-                    <a href="{{ route('blog.show', $post->slug ?? $post->id) }}" class="inline-flex items-center text-primary-600 font-semibold hover:text-primary-800 transition-colors text-sm">
-                        Baca Selengkapnya
-                        <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </a>
                 </div>
             </article>
             @endforeach

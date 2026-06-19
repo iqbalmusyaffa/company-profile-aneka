@@ -8,6 +8,7 @@ use App\Services\CategoryService;
 use App\Services\BrandService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -30,7 +31,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = $this->categoryService->getAll();
+        $categories = \App\Models\Category::product()->get();
         $brands = $this->brandService->getAll();
         return view('admin.products.form', compact('categories', 'brands'));
     }
@@ -41,7 +42,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
-            'sku' => 'nullable|string|max:100',
+            'sku' => 'nullable|string|max:100|unique:products,sku',
             'price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
@@ -50,18 +51,23 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
-            'image' => 'nullable|image|max:5120'
+            'images.*' => 'nullable|image|max:5120',
+            'image_urls' => 'nullable|array',
+            'image_urls.*' => 'nullable|url'
         ]);
 
-        $data = $request->except(['image', '_token']);
+        $data = $request->except(['images', 'image_urls', '_token']);
         $data['is_active'] = $request->has('is_active');
         $data['is_featured'] = $request->has('is_featured');
         $data['slug'] = Str::slug($data['name']) . '-' . uniqid();
+        $data['image_urls'] = $this->parseImageUrls($request->input('image_urls', []));
 
         $product = $this->productService->create($data);
 
-        if ($request->hasFile('image')) {
-            $product->addMedia($request->file('image'))->toMediaCollection('products');
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $product->addMedia($image)->toMediaCollection('products');
+            }
         }
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -70,7 +76,7 @@ class ProductController extends Controller
     public function edit(string $id)
     {
         $product = $this->productService->findById($id);
-        $categories = $this->categoryService->getAll();
+        $categories = \App\Models\Category::product()->get();
         $brands = $this->brandService->getAll();
         return view('admin.products.form', compact('product', 'categories', 'brands'));
     }
@@ -81,7 +87,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
-            'sku' => 'nullable|string|max:100',
+            'sku' => 'nullable|string|max:100|unique:products,sku,' . $id,
             'price' => 'required|numeric|min:0',
             'original_price' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
@@ -90,22 +96,27 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
-            'image' => 'nullable|image|max:5120'
+            'images.*' => 'nullable|image|max:5120',
+            'image_urls' => 'nullable|array',
+            'image_urls.*' => 'nullable|url'
         ]);
 
-        $data = $request->except(['image', '_token', '_method']);
+        $data = $request->except(['images', 'image_urls', '_token', '_method']);
         $data['is_active'] = $request->has('is_active');
         $data['is_featured'] = $request->has('is_featured');
         if($request->name) {
              $data['slug'] = Str::slug($data['name']) . '-' . uniqid();
         }
+        $data['image_urls'] = $this->parseImageUrls($request->input('image_urls', []));
 
         $this->productService->update($id, $data);
         $product = $this->productService->findById($id);
 
-        if ($request->hasFile('image')) {
-            $product->clearMediaCollection('products');
-            $product->addMedia($request->file('image'))->toMediaCollection('products');
+        if ($request->hasFile('images')) {
+            // Note: Tidak menghapus media lama, cukup tambahkan yang baru
+            foreach ($request->file('images') as $image) {
+                $product->addMedia($image)->toMediaCollection('products');
+            }
         }
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
@@ -117,9 +128,119 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus.');
     }
 
-    public function exportExcel()
+    public function report(Request $request)
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ProductsExport, 'data_produk_' . date('Y-m-d_H-i-s') . '.xlsx');
+        $query = \App\Models\Product::with(['category', 'brand']);
+        
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'draft') {
+                $query->where('is_active', false);
+            }
+        }
+
+        $products = $query->get();
+        $categories = \App\Models\Category::product()->get();
+        
+        $assetValue = $products->sum(function($product) {
+            return $product->price * $product->stock;
+        });
+
+        // Data for Chart (Products by Category)
+        $chartData = $products->groupBy(function($item) {
+            return $item->category ? $item->category->name : 'Tanpa Kategori';
+        })->map->count();
+
+        $analysis = [
+            'total_products' => $products->count(),
+            'total_active' => $products->where('is_active', true)->count(),
+            'total_views' => $products->sum('views'),
+            'avg_price' => $products->count() > 0 ? $products->avg('price') : 0,
+            'low_stock' => $products->where('stock', '<', 10)->count(),
+            'top_products' => $products->sortByDesc('views')->take(5),
+            'total_asset_value' => $assetValue
+        ];
+
+        return view('admin.products.report', compact('products', 'categories', 'analysis', 'chartData'));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = \App\Models\Product::with(['category', 'brand']);
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'draft') {
+                $query->where('is_active', false);
+            }
+        }
+        $products = $query->get();
+        
+        $assetValue = $products->sum(function($product) {
+            return $product->price * $product->stock;
+        });
+
+        $chartData = $products->groupBy(function($item) {
+            return $item->category ? $item->category->name : 'Tanpa Kategori';
+        })->map->count();
+
+        $base64Chart = null;
+        if ($chartData->count() > 0) {
+            $labels = $chartData->keys()->toJson();
+            $values = $chartData->values()->toJson();
+            $chartConfig = "{type:'doughnut',data:{labels:$labels,datasets:[{data:$values,backgroundColor:['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec4899','#0ea5e9']}]},options:{plugins:{legend:{position:'right',labels:{fontSize:10}}}}}";
+            $chartUrl = 'https://quickchart.io/chart?c=' . urlencode($chartConfig) . '&w=350&h=180';
+            
+            try {
+                $response = \Illuminate\Support\Facades\Http::timeout(10)->withoutVerifying()->get($chartUrl);
+                if ($response->successful()) {
+                    $base64Chart = 'data:image/png;base64,' . base64_encode($response->body());
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('QuickChart Error: ' . $e->getMessage());
+            }
+        }
+
+        $analysis = [
+            'total_products' => $products->count(),
+            'total_views' => $products->sum('views'),
+            'avg_price' => $products->count() > 0 ? $products->avg('price') : 0,
+            'low_stock' => $products->where('stock', '<', 10)->count(),
+            'top_products' => $products->sortByDesc('views')->take(3),
+            'total_asset_value' => $assetValue
+        ];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.products.export-pdf', compact('products', 'analysis', 'base64Chart'));
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setPaper('a4', 'landscape');
+        
+        return $pdf->download('laporan_produk_' . date('Y-m-d_H-i-s') . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $query = \App\Models\Product::with(['category', 'brand']);
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'draft') {
+                $query->where('is_active', false);
+            }
+        }
+        $products = $query->get();
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ProductsExport($products), 'data_produk_' . date('Y-m-d_H-i-s') . '.xlsx');
     }
 
     public function downloadTemplate()
@@ -139,5 +260,38 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.products.index')->with('error', 'Terjadi kesalahan saat mengimpor data: ' . $e->getMessage());
         }
+    }
+
+    public function deleteImage(string $productId, string $mediaId)
+    {
+        $product = $this->productService->findById($productId);
+        $media = $product->media()->where('id', $mediaId)->first();
+        if ($media) {
+            $media->delete();
+        }
+        return redirect()->back()->with('success', 'Gambar berhasil dihapus.');
+    }
+
+    private function parseImageUrls(array $urls): array
+    {
+        $parsed = [];
+        foreach ($urls as $url) {
+            if (empty($url)) continue;
+            
+            // Konversi berbagai jenis link Google Drive ke direct thumbnail link
+            $fileId = null;
+            if (preg_match('/drive\.google\.com\/.*\/d\/([a-zA-Z0-9_-]+)/', $url, $matches)) {
+                $fileId = $matches[1];
+            } elseif (preg_match('/id=([a-zA-Z0-9_-]+)/', $url, $matches) && strpos($url, 'google.com') !== false) {
+                $fileId = $matches[1];
+            }
+
+            if ($fileId) {
+                $parsed[] = "https://drive.google.com/thumbnail?id={$fileId}&sz=w1000";
+            } else {
+                $parsed[] = $url;
+            }
+        }
+        return array_values(array_unique($parsed));
     }
 }

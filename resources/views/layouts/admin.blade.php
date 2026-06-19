@@ -57,19 +57,31 @@
                     <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     <span class="font-medium">Dasbor</span>
                 </a>
+                <a href="{{ route('admin.analytics.index') }}" class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.analytics.index') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.analytics.index') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span class="font-medium">Analitik Lanjutan</span>
+                </a>
                 
                 <p class="px-4 pt-6 pb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Katalog</p>
-                <a href="{{ route('admin.products.index') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.products.*') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
-                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.products.*') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                <a href="{{ route('admin.products.index') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.products.index', 'admin.products.create', 'admin.products.edit') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.products.index', 'admin.products.create', 'admin.products.edit') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                     <span class="font-medium">Produk</span>
+                </a>
+                <a href="{{ route('admin.products.report') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.products.report') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.products.report') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span class="font-medium">Laporan Produk</span>
                 </a>
                 <a href="{{ route('admin.categories.index') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
                     <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.categories.*') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                     <span class="font-medium">Kategori</span>
                 </a>
-                <a href="{{ route('admin.brands.index') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.brands.*') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
-                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.brands.*') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                <a href="{{ route('admin.brands.index') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.brands.index', 'admin.brands.create', 'admin.brands.edit') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.brands.index', 'admin.brands.create', 'admin.brands.edit') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                     <span class="font-medium">Merek</span>
+                </a>
+                <a href="{{ route('admin.brands.report') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.brands.report') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.brands.report') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span class="font-medium">Laporan Merek</span>
                 </a>
 
                 <p class="px-4 pt-6 pb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Konten</p>
@@ -123,10 +135,30 @@
                     <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.seo-pages.*') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     <span class="font-medium">SEO Pages</span>
                 </a>
+                <a href="{{ route('admin.backups.index') }}" class="group flex items-center px-4 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.backups.*') ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30' : 'hover:bg-white/5 hover:text-white' }}">
+                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('admin.backups.*') ? 'text-white' : 'text-gray-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <span class="font-medium">Backup Database</span>
+                </a>
             </nav>
             
             <!-- User Profile Bottom -->
-            <div class="p-4 border-t border-gray-800 shrink-0 bg-gray-950/50 backdrop-blur-sm m-4 rounded-2xl">
+            <div class="px-4 mt-auto">
+                <a href="{{ route('profile.edit') }}" class="group flex items-center p-3 mt-4 bg-gray-900/50 hover:bg-gray-800 rounded-2xl border border-gray-800 transition-all duration-300">
+                    @if(auth()->user()->avatar)
+                        <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-gray-700 group-hover:border-primary-500 transition-colors">
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-primary-900/50 text-primary-400 flex items-center justify-center font-bold text-sm border-2 border-gray-700 group-hover:border-primary-500 transition-colors">
+                            {{ substr(auth()->user()->name, 0, 1) }}
+                        </div>
+                    @endif
+                    <div class="ml-3 overflow-hidden">
+                        <p class="text-sm font-medium text-white truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-gray-500 truncate">Admin</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="p-4 border-t border-gray-800 mt-4 shrink-0 bg-gray-950/50 backdrop-blur-sm mx-4 mb-4 rounded-2xl">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="group flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-red-500/10 hover:text-red-400 border border-white/5 hover:border-red-500/20 rounded-xl transition-all duration-300">
