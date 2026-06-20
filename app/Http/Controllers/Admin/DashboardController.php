@@ -49,9 +49,10 @@ class DashboardController extends Controller
             'page_views' => $chartPageViews,
         ];
 
-        $recentActivities = \Spatie\Activitylog\Models\Activity::with('causer')->latest()->take(5)->get();
-        $topProducts = \App\Models\Product::orderBy('views', 'desc')->take(5)->get();
+        $recentActivities = \Spatie\Activitylog\Models\Activity::with('causer')->latest()->paginate(5, ['*'], 'activities_page')->appends(request()->query());
+        $topProducts = \App\Models\Product::orderBy('views', 'desc')->paginate(5, ['*'], 'top_products_page')->appends(request()->query());
+        $recentProducts = \App\Models\Product::with(['category', 'brand'])->latest()->paginate(5, ['*'], 'products_page')->appends(request()->query());
 
-        return view('admin.dashboard', compact('stats', 'chartData', 'recentActivities', 'topProducts'));
+        return view('admin.dashboard', compact('stats', 'chartData', 'recentActivities', 'topProducts', 'recentProducts'));
     }
 }

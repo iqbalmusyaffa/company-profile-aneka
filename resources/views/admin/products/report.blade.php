@@ -157,7 +157,7 @@
         </div>
         <div class="p-0">
             <ul class="divide-y divide-gray-50">
-                @forelse($analysis['top_products'] as $top)
+                @forelse($topProducts as $top)
                 <li class="p-4 hover:bg-gray-50 transition-colors flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
                         @if($top->hasMedia('products'))
@@ -183,6 +183,9 @@
                 <li class="p-6 text-center text-gray-500 text-sm">Belum ada data.</li>
                 @endforelse
             </ul>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 overflow-x-auto">
+            {{ $topProducts->links() }}
         </div>
     </div>
 
@@ -228,6 +231,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+            {{ $products->links() }}
         </div>
     </div>
 

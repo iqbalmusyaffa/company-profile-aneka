@@ -148,6 +148,10 @@
                 @endforelse
             </tbody>
         </table>
+        
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
+            {{ $brands->links() }}
+        </div>
     </div>
 </div>
 

@@ -80,27 +80,30 @@ class VisitorController extends Controller
             }
             $dayChartData = ['labels' => array_keys($dayOfWeekStats), 'data' => array_values($dayOfWeekStats)];
 
-            // 4. Top Pages
-            $topPages = \App\Models\PageView::whereBetween('visit_date', [$startDate, $endDate])
-                ->selectRaw('url, SUM(hits) as total_hits')
-                ->groupBy('url')
-                ->orderBy('total_hits', 'DESC')
-                ->limit(10)
-                ->get();
+            // Top pages is moved outside cache to support pagination
 
-            // 5. Locations
-            $topLocations = \App\Models\Visitor::whereBetween('visit_date', [$startDate, $endDate])
-                ->whereNotNull('city')
-                ->selectRaw('city, country, COUNT(*) as visitors')
-                ->groupBy('city', 'country')
-                ->orderBy('visitors', 'DESC')
-                ->limit(10)
-                ->get();
-
-            return compact('chartData', 'browserChartData', 'deviceChartData', 'dayChartData', 'topPages', 'topLocations');
+            return compact('chartData', 'browserChartData', 'deviceChartData', 'dayChartData');
         });
 
         extract($data);
+
+        // 4. Top Pages (Paginated)
+        $topPages = \App\Models\PageView::whereBetween('visit_date', [$startDate, $endDate])
+            ->selectRaw('url, SUM(hits) as total_hits')
+            ->groupBy('url')
+            ->orderBy('total_hits', 'DESC')
+            ->paginate(10, ['*'], 'top_page');
+            
+        $topPages->appends(request()->query());
+
+        // 5. Locations (Paginated)
+        $topLocations = \App\Models\Visitor::whereBetween('visit_date', [$startDate, $endDate])
+            ->whereNotNull('city')
+            ->selectRaw('city, country, COUNT(*) as visitors')
+            ->groupBy('city', 'country')
+            ->orderBy('visitors', 'DESC')
+            ->paginate(5, ['*'], 'locations_page');
+        $topLocations->appends(request()->query());
 
         // Raw Logs
         $visitors = \App\Models\Visitor::whereBetween('visit_date', [$startDate, $endDate])

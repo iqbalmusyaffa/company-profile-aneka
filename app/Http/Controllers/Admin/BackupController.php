@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class BackupController extends Controller
 {
@@ -31,7 +33,18 @@ class BackupController extends Controller
             return $b['date'] <=> $a['date'];
         });
 
-        return view('admin.backups.index', compact('backups'));
+        $perPage = 10;
+        $currentPage = Paginator::resolveCurrentPage('page');
+        
+        $paginatedBackups = new LengthAwarePaginator(
+            array_slice($backups, ($currentPage - 1) * $perPage, $perPage),
+            count($backups),
+            $perPage,
+            $currentPage,
+            ['path' => Paginator::resolveCurrentPath(), 'query' => request()->query()]
+        );
+
+        return view('admin.backups.index', ['backups' => $paginatedBackups]);
     }
 
     public function store()

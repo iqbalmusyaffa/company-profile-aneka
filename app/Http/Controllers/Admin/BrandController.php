@@ -25,7 +25,9 @@ class BrandController extends Controller
             ->withSum('products', 'views')
             ->with('topProduct')
             ->orderByDesc('products_count')
-            ->get();
+            ->paginate(10);
+            
+        $brands->appends(request()->query());
 
         $activeCount = Brand::where('is_active', true)->count();
         $inactiveCount = Brand::where('is_active', false)->count();

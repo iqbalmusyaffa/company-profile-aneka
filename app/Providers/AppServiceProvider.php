@@ -39,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             if (\Illuminate\Support\Facades\Schema::hasTable('categories')) {
-                $navCategories = \App\Models\Category::all();
+                $navCategories = \App\Models\Category::product()->get();
                 $view->with('navCategories', $navCategories);
             } else {
                 $view->with('navCategories', collect());

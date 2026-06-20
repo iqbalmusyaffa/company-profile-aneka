@@ -152,6 +152,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="px-6 sm:px-8 py-4 border-t border-gray-100 bg-gray-50/50">
+            {{ $topPages->links() }}
+        </div>
     </div>
 
     <!-- Top Locations Table -->
@@ -186,6 +189,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="px-6 sm:px-8 py-4 border-t border-gray-100 bg-gray-50/50 overflow-x-auto">
+            {{ $topLocations->links() }}
         </div>
     </div>
 
@@ -277,11 +283,9 @@
         </table>
     </div>
     
-    @if($visitors->hasPages())
     <div class="px-6 sm:px-8 py-4 border-t border-gray-100 bg-gray-50/50">
         {{ $visitors->links() }}
     </div>
-    @endif
 </div>
 @endsection
 

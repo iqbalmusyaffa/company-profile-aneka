@@ -143,29 +143,30 @@ class ProductController extends Controller
             }
         }
 
-        $products = $query->get();
+        $allProducts = $query->get();
+        $products = (clone $query)->paginate(10, ['*'], 'page')->appends($request->query());
+        $topProducts = (clone $query)->orderByDesc('views')->paginate(5, ['*'], 'top_page')->appends($request->query());
         $categories = \App\Models\Category::product()->get();
         
-        $assetValue = $products->sum(function($product) {
+        $assetValue = $allProducts->sum(function($product) {
             return $product->price * $product->stock;
         });
 
         // Data for Chart (Products by Category)
-        $chartData = $products->groupBy(function($item) {
+        $chartData = $allProducts->groupBy(function($item) {
             return $item->category ? $item->category->name : 'Tanpa Kategori';
         })->map->count();
 
         $analysis = [
-            'total_products' => $products->count(),
-            'total_active' => $products->where('is_active', true)->count(),
-            'total_views' => $products->sum('views'),
-            'avg_price' => $products->count() > 0 ? $products->avg('price') : 0,
-            'low_stock' => $products->where('stock', '<', 10)->count(),
-            'top_products' => $products->sortByDesc('views')->take(5),
+            'total_products' => $allProducts->count(),
+            'total_active' => $allProducts->where('is_active', true)->count(),
+            'total_views' => $allProducts->sum('views'),
+            'avg_price' => $allProducts->count() > 0 ? $allProducts->avg('price') : 0,
+            'low_stock' => $allProducts->where('stock', '<', 10)->count(),
             'total_asset_value' => $assetValue
         ];
 
-        return view('admin.products.report', compact('products', 'categories', 'analysis', 'chartData'));
+        return view('admin.products.report', compact('products', 'categories', 'analysis', 'chartData', 'topProducts'));
     }
 
     public function exportPdf(Request $request)

@@ -17,9 +17,15 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = $this->categoryService->paginate(5);
+        $query = \App\Models\Category::query();
+        
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        
+        $categories = $query->latest()->paginate(5)->appends($request->query());
         return view('admin.categories.index', compact('categories'));
     }
 

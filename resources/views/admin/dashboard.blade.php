@@ -202,7 +202,7 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-50">
-                @forelse(\App\Models\Product::with(['category', 'brand'])->latest()->take(5)->get() as $product)
+                @forelse($recentProducts as $product)
                 <tr class="hover:bg-gray-50/80 transition-colors group">
                     <td class="px-8 py-4 whitespace-nowrap">
                         <div class="flex items-center">
@@ -250,6 +250,9 @@
             </tbody>
         </table>
     </div>
+    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 overflow-x-auto">
+        {{ $recentProducts->links() }}
+    </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -293,6 +296,9 @@
                 </li>
                 @endforelse
             </ul>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 overflow-x-auto">
+            {{ $recentActivities->links('pagination::simple-tailwind') }}
         </div>
     </div>
 
@@ -338,6 +344,9 @@
                 </li>
                 @endforelse
             </ul>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 overflow-x-auto">
+            {{ $topProducts->links() }}
         </div>
     </div>
 </div>

@@ -19,7 +19,16 @@
 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
     <div class="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-wrap gap-4 items-center justify-between">
         <div class="text-sm text-gray-500 font-medium">
-            Total: {{ $categories->count() }} Kategori
+            Total: {{ $categories->total() }} Kategori
+        </div>
+        <div>
+            <form action="{{ route('admin.categories.index') }}" method="GET" class="flex items-center gap-2">
+                <select name="type" onchange="this.form.submit()" class="text-sm border-gray-300 rounded-lg shadow-sm focus:ring-primary-500 focus:border-primary-500 py-2 pl-3 pr-10">
+                    <option value="">Semua Jenis</option>
+                    <option value="product" {{ request('type') === 'product' ? 'selected' : '' }}>Produk</option>
+                    <option value="post" {{ request('type') === 'post' ? 'selected' : '' }}>Artikel Blog</option>
+                </select>
+            </form>
         </div>
     </div>
 

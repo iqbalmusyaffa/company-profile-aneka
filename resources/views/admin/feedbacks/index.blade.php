@@ -81,10 +81,8 @@
         </table>
     </div>
     
-    @if($feedbacks->hasPages())
-    <div class="px-6 py-4 border-t border-gray-100">
+    <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50">
         {{ $feedbacks->links() }}
     </div>
-    @endif
 </div>
 @endsection

@@ -195,19 +195,19 @@
         <div class="flex-1 flex flex-col overflow-hidden">
             
             <!-- Top Header -->
-            <header class="bg-white/80 backdrop-blur-md border-b border-gray-100 h-20 shrink-0 flex items-center justify-between px-8 z-40 sticky top-0">
+            <header class="bg-white/80 backdrop-blur-md border-b border-gray-100 h-20 shrink-0 flex items-center justify-between px-4 sm:px-8 z-40 sticky top-0">
                 <!-- Mobile menu button -->
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 sm:gap-4">
                     <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 rounded-xl text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors focus:outline-none">
                         <span class="sr-only">Buka menu</span>
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <h1 class="text-2xl font-extrabold text-gray-800 hidden sm:block tracking-tight">@yield('title')</h1>
+                    <h1 class="text-lg sm:text-2xl font-extrabold text-gray-800 hidden sm:block tracking-tight">@yield('title')</h1>
                 </div>
                 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center gap-2 sm:gap-4">
                     <!-- Notifications Dropdown -->
                     <div x-data="{ open: false }" class="relative">
                         <button @click="open = !open" @click.away="open = false" class="relative p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500">
@@ -220,7 +220,7 @@
                             @endif
                         </button>
 
-                        <div x-show="open" x-transition.opacity class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                        <div x-show="open" x-transition.opacity class="absolute -right-14 sm:right-0 mt-2 w-[280px] sm:w-80 max-w-[90vw] bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
                             <div class="px-4 py-2 border-b border-gray-100 flex justify-between items-center">
                                 <h3 class="text-sm font-bold text-gray-900">Aktivitas Terkini</h3>
                                 <a href="{{ route('admin.activity-logs.index') }}" class="text-xs text-primary-600 hover:text-primary-800">Lihat Semua</a>
@@ -229,9 +229,9 @@
                                 @forelse(\Spatie\Activitylog\Models\Activity::with('causer')->latest()->take(5)->get() as $log)
                                     <div class="px-4 py-3 hover:bg-gray-50 border-b border-gray-50 last:border-0">
                                         <p class="text-sm font-medium text-gray-900">{{ $log->description }}</p>
-                                        <p class="text-xs text-gray-500 mt-1 flex justify-between">
-                                            <span>Oleh: {{ $log->causer->name ?? 'Sistem' }}</span>
-                                            <span>{{ $log->created_at->diffForHumans() }}</span>
+                                        <p class="text-xs text-gray-500 mt-1 flex justify-between gap-2">
+                                            <span class="truncate">Oleh: {{ $log->causer->name ?? 'Sistem' }}</span>
+                                            <span class="shrink-0">{{ $log->created_at->diffForHumans() }}</span>
                                         </p>
                                     </div>
                                 @empty
@@ -241,9 +241,9 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('home') }}" target="_blank" class="px-5 py-2.5 bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 rounded-xl font-semibold text-sm transition-colors flex items-center gap-2">
-                        <span>Lihat Website</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    <a href="{{ route('home') }}" target="_blank" class="px-3 sm:px-5 py-2.5 bg-primary-50 text-primary-600 hover:bg-primary-100 hover:text-primary-700 rounded-xl font-semibold text-sm transition-colors flex items-center gap-2">
+                        <span class="hidden sm:inline">Lihat Website</span>
+                        <svg class="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                     </a>
                 </div>
             </header>

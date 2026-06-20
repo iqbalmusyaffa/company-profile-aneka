@@ -34,15 +34,13 @@ class AnalyticsController extends Controller
             ->whereNotNull('city')
             ->groupBy('city')
             ->orderByDesc('total_visitors')
-            ->limit(5)
-            ->get();
+            ->paginate(5, ['*'], 'cities_page');
 
         $topCountries = Visitor::select('country', DB::raw('COUNT(id) as total_visitors'))
             ->whereNotNull('country')
             ->groupBy('country')
             ->orderByDesc('total_visitors')
-            ->limit(5)
-            ->get();
+            ->paginate(5, ['*'], 'countries_page');
 
         // 4. Visitors by Device (Parsed from user_agent roughly)
         $mobileVisitors = Visitor::where('user_agent', 'like', '%Mobile%')
