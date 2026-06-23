@@ -50,11 +50,11 @@ Route::get('/syarat-ketentuan', [PageController::class, 'terms'])->name('terms')
 Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('privacy');
 
 Route::get('/kontak', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/kontak', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/kontak', [ContactController::class, 'send'])->name('contact.send')->middleware(['throttle:10,1']);
 Route::get('/kritik-saran', [ContactController::class, 'feedback'])->name('feedback.index');
-Route::post('/kritik-saran', [ContactController::class, 'storeFeedback'])->name('feedback.store');
+Route::post('/kritik-saran', [ContactController::class, 'storeFeedback'])->name('feedback.store')->middleware(['throttle:5,1', \Spatie\Honeypot\ProtectAgainstSpam::class]);
 Route::get('/laporan-bug', [ContactController::class, 'bugReport'])->name('bug.index');
-Route::post('/laporan-bug', [ContactController::class, 'storeBugReport'])->name('bug.store');
+Route::post('/laporan-bug', [ContactController::class, 'storeBugReport'])->name('bug.store')->middleware(['throttle:5,1', \Spatie\Honeypot\ProtectAgainstSpam::class]);
 
 // Sitemap
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

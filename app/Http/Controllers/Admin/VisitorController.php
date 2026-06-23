@@ -306,12 +306,14 @@ class VisitorController extends Controller
             ['ip_address' => $request->ip_address],
             ['reason' => $request->reason ?? 'Diblokir dari dashboard administrator']
         );
+        \Illuminate\Support\Facades\Cache::forget('blocked_ips');
         return back()->with('success', 'IP Address ' . $request->ip_address . ' berhasil diblokir.');
     }
 
     public function unblockIp($ip)
     {
         \App\Models\BlockedIp::where('ip_address', $ip)->delete();
+        \Illuminate\Support\Facades\Cache::forget('blocked_ips');
         return back()->with('success', 'Blokir untuk IP Address ' . $ip . ' berhasil dibuka.');
     }
 }

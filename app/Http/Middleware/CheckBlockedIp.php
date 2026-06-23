@@ -15,7 +15,11 @@ class CheckBlockedIp
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (\App\Models\BlockedIp::where('ip_address', $request->ip())->exists()) {
+        $blockedIps = \Illuminate\Support\Facades\Cache::rememberForever('blocked_ips', function () {
+            return \App\Models\BlockedIp::pluck('ip_address')->toArray();
+        });
+
+        if (in_array($request->ip(), $blockedIps)) {
             abort(403, 'Akses Anda diblokir oleh administrator.');
         }
 

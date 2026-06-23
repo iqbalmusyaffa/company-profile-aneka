@@ -43,7 +43,25 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+            // Lockout 15 minutes (900 seconds) after 5 attempts
+            RateLimiter::hit($this->throttleKey(), 900);
+
+            // Progressive Ban Logic: Track IP total fails
+            $ipKey = 'failed_login_ip_' . $this->ip();
+            if (!\Illuminate\Support\Facades\Cache::has($ipKey)) {
+                \Illuminate\Support\Facades\Cache::put($ipKey, 1, now()->addHours(24));
+            } else {
+                \Illuminate\Support\Facades\Cache::increment($ipKey);
+            }
+            $totalFails = \Illuminate\Support\Facades\Cache::get($ipKey);
+
+            if ($totalFails >= 10) {
+                \App\Models\BlockedIp::firstOrCreate(
+                    ['ip_address' => $this->ip()],
+                    ['reason' => 'Otomatis diblokir: Terdeteksi Brute-Force (10x Gagal Login)']
+                );
+                \Illuminate\Support\Facades\Cache::forget('blocked_ips');
+            }
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -51,6 +69,7 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+        \Illuminate\Support\Facades\Cache::forget('failed_login_ip_' . $this->ip());
     }
 
     /**

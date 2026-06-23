@@ -23,6 +23,7 @@
 
             <form action="{{ route('feedback.store') }}" method="POST" class="space-y-6">
                 @csrf
+                @honeypot
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="name" class="block text-sm font-bold text-gray-700 mb-1.5">Nama Anda <span class="text-red-500">*</span></label>

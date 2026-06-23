@@ -14,7 +14,7 @@ class BackupController extends Controller
     public function index()
     {
         $backupDir = storage_path('app/backups');
-        $files = file_exists($backupDir) ? glob($backupDir . '/*.sql') : [];
+        $files = file_exists($backupDir) ? glob($backupDir . '/*.zip') : [];
         
         $backups = [];
         if ($files) {
@@ -55,8 +55,11 @@ class BackupController extends Controller
                 mkdir($backupDir, 0755, true);
             }
 
-            $filename = 'backup-' . date('Y-m-d-His') . '.sql';
-            $path = $backupDir . DIRECTORY_SEPARATOR . $filename;
+            $timePrefix = 'backup-' . date('Y-m-d-His');
+            $sqlFilename = $timePrefix . '.sql';
+            $sqlPath = $backupDir . DIRECTORY_SEPARATOR . $sqlFilename;
+            $zipFilename = $timePrefix . '.zip';
+            $zipPath = $backupDir . DIRECTORY_SEPARATOR . $zipFilename;
             
             $dbName = config('database.connections.mysql.database');
             $dbUser = config('database.connections.mysql.username');
@@ -69,7 +72,22 @@ class BackupController extends Controller
 
             // Gunakan library PHP murni untuk dump database tanpa butuh mysqldump.exe di server
             $dump = new \Ifsnop\Mysqldump\Mysqldump($dsn, $dbUser, $dbPass);
-            $dump->start($path);
+            $dump->start($sqlPath);
+
+            $zip = new \ZipArchive();
+            if ($zip->open($zipPath, \ZipArchive::CREATE) === TRUE) {
+                $zip->addFile($sqlPath, $sqlFilename);
+                $password = config('app.key');
+                if (str_starts_with($password, 'base64:')) {
+                    $password = substr($password, 7);
+                }
+                $zip->setEncryptionName($sqlFilename, \ZipArchive::EM_AES_256, $password);
+                $zip->close();
+
+                unlink($sqlPath);
+            } else {
+                throw new \Exception('Gagal membuat file ZIP terenkripsi.');
+            }
 
             return redirect()->route('admin.backups.index')->with('success', 'Backup database berhasil dibuat.');
         } catch (\Exception $e) {

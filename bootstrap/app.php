@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append([
+            \App\Http\Middleware\StrictFileUploads::class,
+            \App\Http\Middleware\SecurityHeaders::class,
+        ]);
         $middleware->web(append: [
             \App\Http\Middleware\CheckBlockedIp::class,
             \App\Http\Middleware\TrackVisitor::class,

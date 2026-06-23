@@ -35,10 +35,11 @@
     31 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     32 => 'Termwind\\Laravel\\TermwindServiceProvider',
     33 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-    34 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
-    35 => 'Spatie\\Sitemap\\SitemapServiceProvider',
-    36 => 'Stevebauman\\Location\\LocationServiceProvider',
-    37 => 'App\\Providers\\AppServiceProvider',
+    34 => 'Spatie\\Honeypot\\HoneypotServiceProvider',
+    35 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
+    36 => 'Spatie\\Sitemap\\SitemapServiceProvider',
+    37 => 'Stevebauman\\Location\\LocationServiceProvider',
+    38 => 'App\\Providers\\AppServiceProvider',
   ),
   'eager' => 
   array (
@@ -60,10 +61,11 @@
     15 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     16 => 'Termwind\\Laravel\\TermwindServiceProvider',
     17 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-    18 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
-    19 => 'Spatie\\Sitemap\\SitemapServiceProvider',
-    20 => 'Stevebauman\\Location\\LocationServiceProvider',
-    21 => 'App\\Providers\\AppServiceProvider',
+    18 => 'Spatie\\Honeypot\\HoneypotServiceProvider',
+    19 => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
+    20 => 'Spatie\\Sitemap\\SitemapServiceProvider',
+    21 => 'Stevebauman\\Location\\LocationServiceProvider',
+    22 => 'App\\Providers\\AppServiceProvider',
   ),
   'deferred' => 
   array (
