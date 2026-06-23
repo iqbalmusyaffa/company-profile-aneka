@@ -80,9 +80,32 @@ class VisitorController extends Controller
             }
             $dayChartData = ['labels' => array_keys($dayOfWeekStats), 'data' => array_values($dayOfWeekStats)];
 
-            // Top pages is moved outside cache to support pagination
+            // Top Systems
+            $topSystemsRaw = [];
+            foreach ($allVisitors as $v) {
+                $device = $v->device_type;
+                $platform = $v->platform;
+                $browser = $v->browser_name;
+                $key = "$device|$platform|$browser";
+                if (!isset($topSystemsRaw[$key])) {
+                    $topSystemsRaw[$key] = 0;
+                }
+                $topSystemsRaw[$key]++;
+            }
+            arsort($topSystemsRaw);
+            $topSystemsRaw = array_slice($topSystemsRaw, 0, 5);
+            $topSystems = [];
+            foreach ($topSystemsRaw as $key => $count) {
+                list($device, $platform, $browser) = explode('|', $key);
+                $topSystems[] = (object)[
+                    'device' => $device,
+                    'platform' => $platform,
+                    'browser' => $browser,
+                    'count' => $count
+                ];
+            }
 
-            return compact('chartData', 'browserChartData', 'deviceChartData', 'dayChartData');
+            return compact('chartData', 'browserChartData', 'deviceChartData', 'dayChartData', 'topSystems');
         });
 
         extract($data);
@@ -116,7 +139,7 @@ class VisitorController extends Controller
         // Blocked IPs
         $blockedIps = \App\Models\BlockedIp::pluck('ip_address')->toArray();
 
-        return view('admin.visitors.index', compact('chartData', 'browserChartData', 'deviceChartData', 'dayChartData', 'visitors', 'startDate', 'endDate', 'topPages', 'topLocations', 'blockedIps'));
+        return view('admin.visitors.index', compact('chartData', 'browserChartData', 'deviceChartData', 'dayChartData', 'visitors', 'startDate', 'endDate', 'topPages', 'topLocations', 'blockedIps', 'topSystems'));
     }
 
     public function exportPdf(Request $request)

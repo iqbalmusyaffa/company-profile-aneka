@@ -159,7 +159,7 @@
                     @if($visitor->city)
                         <strong>{{ $visitor->city }}, {{ $visitor->country }}</strong><br>
                     @endif
-                    {{ \Illuminate\Support\Str::limit($visitor->user_agent, 50) }}
+                    <span style="color: #666; font-size: 11px;">{{ $visitor->device_type }} &bull; {{ $visitor->platform }} ({{ $visitor->browser_name }})</span>
                 </td>
             </tr>
             @endforeach

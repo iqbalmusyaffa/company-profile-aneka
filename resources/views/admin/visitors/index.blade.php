@@ -117,7 +117,7 @@
 </div>
 
 <!-- Top Pages and Locations -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     
     <!-- Top Pages Table -->
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
@@ -157,8 +157,9 @@
         </div>
     </div>
 
-    <!-- Top Locations Table -->
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="flex flex-col gap-6">
+        <!-- Top Locations Table -->
+        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 sm:px-8 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
@@ -195,6 +196,51 @@
         </div>
     </div>
 
+    <!-- Top Systems Table -->
+    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 sm:px-8 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                Perangkat & Sistem
+            </h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-50">
+                <thead class="bg-white">
+                    <tr>
+                        <th class="px-6 sm:px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Perangkat / OS</th>
+                        <th class="px-6 sm:px-8 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-50">
+                    @forelse($topSystems as $sys)
+                    <tr class="hover:bg-gray-50/80 transition-colors">
+                        <td class="px-6 sm:px-8 py-4 text-sm font-medium text-gray-700">
+                            <div class="flex items-center gap-2">
+                                @if($sys->device === 'Mobile')
+                                    <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                @elseif($sys->device === 'Tablet')
+                                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                @else
+                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                @endif
+                                <span class="truncate">{{ $sys->device }} &bull; {{ $sys->platform }} ({{ $sys->browser }})</span>
+                            </div>
+                        </td>
+                        <td class="px-6 sm:px-8 py-4 text-sm font-bold text-gray-900 text-right">{{ number_format($sys->count) }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="2" class="px-6 sm:px-8 py-8 text-center text-sm text-gray-500">Belum ada data perangkat.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 sm:px-8 py-4 border-t border-gray-100 bg-gray-50/50 overflow-x-auto text-xs text-gray-500 text-center font-medium">
+            5 Kombinasi Perangkat Terpopuler
+        </div>
+    </div>
+
+    </div>
 </div>
 
 <!-- Table Section -->
