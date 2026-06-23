@@ -70,10 +70,15 @@ class VisitorController extends Controller
             $deviceChartData = ['labels' => array_keys($devices), 'data' => array_values($devices)];
 
             // 3. Day of Week Data (Bar Chart)
+            $dayNamesMap = [
+                1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 
+                4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'
+            ];
             $dayOfWeekStats = ['Senin' => 0, 'Selasa' => 0, 'Rabu' => 0, 'Kamis' => 0, 'Jumat' => 0, 'Sabtu' => 0, 'Minggu' => 0];
             $allVisitors = \App\Models\Visitor::whereBetween('visit_date', [$startDate, $endDate])->get();
             foreach ($allVisitors as $v) {
-                $dayName = \Carbon\Carbon::parse($v->visit_date)->translatedFormat('l');
+                $dayNum = \Carbon\Carbon::parse($v->visit_date)->format('N');
+                $dayName = $dayNamesMap[$dayNum] ?? 'Senin';
                 if (isset($dayOfWeekStats[$dayName])) {
                     $dayOfWeekStats[$dayName] += $v->hits;
                 }
