@@ -17,7 +17,7 @@
     </a>
 </div>
 
-<form action="{{ isset($post) ? route('admin.posts.update', $post->id) : route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
+<form id="post-form" action="{{ isset($post) ? route('admin.posts.update', $post->id) : route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @if(isset($post))
         @method('PUT')
@@ -156,15 +156,17 @@
         }
 
         // On form submit, populate the hidden input
-        var form = document.querySelector('form');
-        form.onsubmit = function() {
-            // Check if it's purely empty tags
-            if (quill.getText().trim().length === 0 && !quill.root.querySelector('img')) {
-                descInput.value = '';
-            } else {
-                descInput.value = quill.root.innerHTML;
-            }
-        };
+        var form = document.getElementById('post-form');
+        if (form) {
+            form.onsubmit = function() {
+                // Check if it's purely empty tags
+                if (quill.getText().trim().length === 0 && !quill.root.querySelector('img')) {
+                    descInput.value = '';
+                } else {
+                    descInput.value = quill.root.innerHTML;
+                }
+            };
+        }
     });
 </script>
 @endpush
